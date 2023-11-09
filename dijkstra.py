@@ -1,30 +1,95 @@
+import heapq
 import sys
 import json
 import math  # If you want to use math.inf for infinity
 
+# TODO refactor this code based on specific problem
+# TODO cook noodles
 
-class Node:
-    parent = None
-    distance = 0
+# This class is taken from an implementation I used in Algorithms in 2023.
+# I believe the original source was either provided by the instructor, or
+# based on slides.
+class Graph:
+
+    # construct the graph
+    def __init__(self, vertices):
+        self.V = vertices
+        # adjacency matrix
+        self.graph = [[0 for column in range(vertices)]
+                      for row in range(vertices)]
+        # list of edges
+        self.edges = []
+
+    # set the adjacency matrix
+    def set_adj_matrix(self, adjmat):
+
+        # function to add an edge to edge list
+        def addEdge(self, u, v, w):
+            if w > 0:
+                self.edges.append([u, v, w])
+
+                # function to add edges for an adj matrix
+
+        def setEdges(self, m):
+            for i in range(len(m)):
+                for j in range(len(m[i])):
+                    addEdge(self, i, j, m[i][j])
+            return
+
+        self.graph = adjmat
+        setEdges(self, adjmat)
+
+    # pretty print the path
+    def printPath(self, dist):
+        print("vertex\tdistance")
+        for node in range(self.V):
+            print(node, "\t", dist[node])
 
 
-def dijkstras(graph, source: Node):
-    to_visit = []
-    distances = {}
-    parents = {}
+    # Dijkstra's single source shortest path algorithm
+    def dijkstra(self, src):
+        # Do some setup for our datastructures
+        dist = [sys.maxsize] * self.V
 
-    for node in graph.vertices:
-        node.parent = None
-        node.distance = math.inf
-        to_visit[node] = node
+        # InitSSSP(s)
+        dist[src] = 0
 
-    while len(to_visit) > 0:
-        current_node = to_visit.pop
+        # Insert(s, 0)
+        src_vertex = (dist[src], src)
+        priority_queue = [src_vertex]
+
+        # while the priority queue is not empty
+        while priority_queue:
+
+            # u←ExtractMin()
+            u = heapq.heappop(priority_queue)[1]
+
+            # for all edges u→v
+            for u_v in self.edges:
+                if u_v[0] == u:
+                    v = u_v[1]
+                    w = u_v[2]
+
+                    # if u→v is tense
+                    if dist[u] + w < dist[v]:
+
+                        # Relax u→v
+                        dist[v] = dist[u] + w
+                        # pred[v] = u
+                        target_vertex = (dist[v], v)
+
+                        # if v is in the priority queue DecreaseKey(v, dist(v)) else Insert(v, dist(v))
+                        #
+                        #   Python doesn't have a clean way to do the DecreaseKey() method on
+                        #   a Priority Queue implemented from heapq, so we just rely on the heap
+                        #   invariant of the PQ to take care of the difference between DecreaseKey()
+                        #   and Insert().
+                        heapq.heappush(priority_queue, target_vertex)
 
 
-def shortest_path():
-    pass
-
+        # print path and return it
+        self.printPath(dist)
+        return dist
 
 def dijkstras_shortest_path(routers, src_ip, dest_ip):
     """
