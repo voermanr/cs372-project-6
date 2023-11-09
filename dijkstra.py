@@ -4,7 +4,6 @@ import json
 import math  # If you want to use math.inf for infinity
 
 # TODO refactor this code based on specific problem
-# TODO cook noodles
 
 # This class is taken from an implementation I used in Algorithms in 2023.
 # I believe the original source was either provided by the instructor, or
@@ -146,6 +145,7 @@ def dijkstras_shortest_path(routers, src_ip, dest_ip):
     """
 
     # TODO Write me!
+
     pass
 
 
