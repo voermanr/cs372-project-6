@@ -2,6 +2,30 @@ import sys
 import json
 import math  # If you want to use math.inf for infinity
 
+
+class Node:
+    parent = None
+    distance = 0
+
+
+def dijkstras(graph, source: Node):
+    to_visit = []
+    distances = {}
+    parents = {}
+
+    for node in graph.vertices:
+        node.parent = None
+        node.distance = math.inf
+        to_visit[node] = node
+
+    while len(to_visit) > 0:
+        current_node = to_visit.pop
+
+
+def shortest_path():
+    pass
+
+
 def dijkstras_shortest_path(routers, src_ip, dest_ip):
     """
     This function takes a dictionary representing the network, a source
@@ -59,22 +83,26 @@ def dijkstras_shortest_path(routers, src_ip, dest_ip):
     # TODO Write me!
     pass
 
-#------------------------------
+
+# ------------------------------
 # DO NOT MODIFY BELOW THIS LINE
-#------------------------------
+# ------------------------------
 def read_routers(file_name):
     with open(file_name) as fp:
         data = fp.read()
 
     return json.loads(data)
 
+
 def find_routes(routers, src_dest_pairs):
     for src_ip, dest_ip in src_dest_pairs:
         path = dijkstras_shortest_path(routers, src_ip, dest_ip)
         print(f"{src_ip:>15s} -> {dest_ip:<15s}  {repr(path)}")
 
+
 def usage():
     print("usage: dijkstra.py infile.json", file=sys.stderr)
+
 
 def main(argv):
     try:
@@ -90,6 +118,6 @@ def main(argv):
 
     find_routes(routers, routes)
 
+
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
-    
