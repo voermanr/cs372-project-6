@@ -49,6 +49,7 @@ class Graph:
     def dijkstra(self, src):
         # Do some setup for our datastructures
         dist = [sys.maxsize] * self.V
+        pred = [None] * self.V
 
         # InitSSSP(s)
         dist[src] = 0
@@ -74,7 +75,7 @@ class Graph:
 
                         # Relax u→v
                         dist[v] = dist[u] + w
-                        # pred[v] = u
+                        pred[v] = u
                         target_vertex = (dist[v], v)
 
                         # if v is in the priority queue DecreaseKey(v, dist(v)) else Insert(v, dist(v))
@@ -84,7 +85,6 @@ class Graph:
                         #   invariant of the PQ to take care of the difference between DecreaseKey()
                         #   and Insert().
                         heapq.heappush(priority_queue, target_vertex)
-
 
         # print path and return it
         self.printPath(dist)
@@ -145,6 +145,10 @@ def dijkstras_shortest_path(routers, src_ip, dest_ip):
     """
 
     # TODO Write me!
+    # need to get number of vertices and make and
+    # adjacency matrix for that
+
+    # parse routers
 
     pass
 
@@ -186,3 +190,16 @@ def main(argv):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
+
+
+def router_dict_to_adj_m(routers) -> [[int]]:
+    """
+    parses a json router dictionary and returns an adjacency list
+    """
+    _adj_m = [[int]]
+
+    return _adj_m
+
+
+def sort_router_ip_addresses(routers) -> list:
+    return sorted(routers.keys())
