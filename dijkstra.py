@@ -145,7 +145,10 @@ class RouterGraph(Graph):
     def sort_router_ip_addresses(routers) -> list:
         return sorted(routers.keys())
 
-        return _sorted_keys
+    @staticmethod
+    def find_routers_for_ip_pair(routers, src_ip, dest_ip) -> tuple:
+        return (nf.find_router_for_ip(routers=routers, ip=src_ip),
+                nf.find_router_for_ip(routers=routers, ip=dest_ip))
 
 
 def dijkstras_shortest_path(routers, src_ip, dest_ip) -> list:
@@ -202,8 +205,7 @@ def dijkstras_shortest_path(routers, src_ip, dest_ip) -> list:
     for madness.
     """
 
-    src_router, dest_router = (nf.find_router_for_ip(routers=routers, ip=src_ip),
-                               nf.find_router_for_ip(routers=routers, ip=dest_ip))
+    src_router, dest_router = RouterGraph.find_routers_for_ip_pair(routers, src_ip, dest_ip)
 
     _adj_mat, _router_keys_sorted = Graph.router_dict_to_adj_m(routers=routers)
     _graph = Graph(_adj_mat)
