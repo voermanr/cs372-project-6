@@ -112,6 +112,10 @@ class Graph:
         return path[::-1]
 
 
+class RouterGraph(Graph):
+    """
+    A bad class that contains routerish functions and extends Graph.
+    """
     @staticmethod
     def router_dict_to_adj_m(routers) -> [[int]]:
         """
@@ -119,25 +123,27 @@ class Graph:
         :param routers: JSON routers
         :return: adjacency_matrix, router_keys_sorted
         """
-        _n_routers = len(routers)
 
-        _adj_m = [[0 for _ in range(_n_routers)] for _ in range(_n_routers)]
+        l = len(routers)
 
-        _routers_keys_sorted = Graph.sort_router_ip_addresses(routers)
+        adjacency_matrix = [
+            [0 for _ in range(l)] for _ in range(l)
+        ]
 
-        for i, router_ip in enumerate(_routers_keys_sorted):
-            vprint(f'router_key {i}:\t{router_ip}')
-            for connection_ip, connection_attributes in routers[router_ip]['connections'].items():
-                j = _routers_keys_sorted.index(connection_ip)
-                vprint(f'Router {i}:\tconnection {connection_ip} \t-> {j}:\t{connection_attributes}')
-                _adj_m[i][j] = connection_attributes['ad']
+        routers_keys_sorted = RouterGraph.sort_router_ip_addresses(routers)
 
-        return _adj_m, _routers_keys_sorted
+        for i, router_ip in enumerate(routers_keys_sorted):
+            router_connections = routers[router_ip]['connections'].items()
 
+            for connection_ip, connection_attributes in router_connections:
+                j = routers_keys_sorted.index(connection_ip)
+                adjacency_matrix[i][j] = connection_attributes['ad']
+
+        return adjacency_matrix, routers_keys_sorted
 
     @staticmethod
     def sort_router_ip_addresses(routers) -> list:
-        _sorted_keys = sorted(routers.keys())
+        return sorted(routers.keys())
 
         return _sorted_keys
 
