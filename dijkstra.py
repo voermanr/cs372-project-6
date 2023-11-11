@@ -54,7 +54,7 @@ class Graph:
             vprint(node, "\t", dist[node])
 
     # Dijkstra's single source shortest path algorithm
-    def dijkstra(self, src):
+    def dijkstra(self, src: int):
         # Do some setup for our datastructures
         dist = [math.inf] * self.V
         pred = [None] * self.V
@@ -106,9 +106,8 @@ class Graph:
 
         while current_node != src:
             path.append(current_node)
-            vprint(f'shortest_path:\tAdded {current_node} to path\n\t\t{path}')
             current_node = prev[current_node]
-            vprint(f'\t\tGrabbing parent -> {current_node}')
+
         path.append(src)
 
         return path[::-1]
