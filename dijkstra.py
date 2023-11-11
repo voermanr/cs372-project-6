@@ -124,10 +124,10 @@ class RouterGraph(Graph):
         :return: adjacency_matrix, router_keys_sorted
         """
 
-        l = len(routers)
+        length = len(routers)
 
         adjacency_matrix = [
-            [0 for _ in range(l)] for _ in range(l)
+            [0 for _ in range(length)] for _ in range(length)
         ]
 
         routers_keys_sorted = RouterGraph.sort_router_ip_addresses(routers)
