@@ -19,18 +19,18 @@ def vprint(*values):
 class Graph:
 
     # construct the graph
-    def __init__(self, adjmat):
-        self.V = len(adjmat)
+    def __init__(self, adjacency_matrix):
+        self.V = len(adjacency_matrix)
         # adjacency matrix
         self.graph = [[0 for _ in range(self.V)]
                       for _ in range(self.V)]
         # list of edges
         self.edges = []
 
-        self.set_adj_matrix(adjmat=adjmat)
+        self.set_adj_matrix(adjacency_matrix=adjacency_matrix)
 
     # set the adjacency matrix
-    def set_adj_matrix(self, adjmat):
+    def set_adj_matrix(self, adjacency_matrix):
 
         # function to add an edge to edge list
         def add_edge(self, u, v, w):
@@ -44,8 +44,8 @@ class Graph:
                     add_edge(self, i, j, m[i][j])
             return
 
-        self.graph = adjmat
-        set_edges(self, adjmat)
+        self.graph = adjacency_matrix
+        set_edges(self, adjacency_matrix)
 
     # pretty print the path
     def print_path(self, dist):
