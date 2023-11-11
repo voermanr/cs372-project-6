@@ -85,7 +85,7 @@ class TestDijkstras(unittest.TestCase):
         s = 0
         d = 3
 
-        test_prev = test_graph.dijkstra(src=s)[1]
+        test_prev = test_graph.dijkstra(src=s)
 
         self.assertEqual([0, 2, 1, 3],
                          di.Graph.shortest_path(dest=d, prev=test_prev))
@@ -125,7 +125,7 @@ class TestDijkstras(unittest.TestCase):
                             '10.0.0.2',
                             '10.0.0.3'])
 
-        self.assertEqual(expected_return, di.Graph.router_dict_to_adj_m(routers=routers))
+        self.assertEqual(expected_return, di.RouterGraph.router_dict_to_adj_m(routers=routers))
 
     def test_sort_router_ip_addresses(self):
         expected_return = ['10.34.166.1', '10.34.194.1',
@@ -138,7 +138,7 @@ class TestDijkstras(unittest.TestCase):
 
         routers = json_data["routers"]
 
-        self.assertEqual(expected_return, di.Graph.sort_router_ip_addresses(routers=routers))
+        self.assertEqual(expected_return, di.RouterGraph.sort_router_ip_addresses(routers=routers))
 
 
 if __name__ == '__main__':

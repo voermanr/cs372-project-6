@@ -207,14 +207,14 @@ def dijkstras_shortest_path(routers, src_ip, dest_ip) -> list:
 
     src_router, dest_router = RouterGraph.find_routers_for_ip_pair(routers, src_ip, dest_ip)
 
-    _adj_mat, _router_keys_sorted = Graph.router_dict_to_adj_m(routers=routers)
-    _graph = Graph(_adj_mat)
+    adj_mat, router_keys_sorted = RouterGraph.router_dict_to_adj_m(routers=routers)
+    graph = Graph(adj_mat)
 
-    _src, _dest = _router_keys_sorted.index(src_router), _router_keys_sorted.index(dest_router)
+    src, dest = router_keys_sorted.index(src_router), router_keys_sorted.index(dest_router)
 
     prev = graph.dijkstra(src=src)
 
-    ip_path = [_router_keys_sorted[i] for i in Graph.shortest_path(dest=_dest, prev=_prev)]
+    ip_path = [router_keys_sorted[i] for i in Graph.shortest_path(dest=dest, prev=prev)]
 
     return ip_path if len(ip_path) > 1 else []
 
