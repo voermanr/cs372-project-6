@@ -94,9 +94,8 @@ class Graph:
                         heapq.heappush(priority_queue, target_vertex)
 
         # print path and return it
-        self.print_path(dist)
-        return dist, pred
-
+        # self.print_path(dist)
+        return pred
 
     @staticmethod
     def shortest_path(dest, prev):
@@ -205,7 +204,7 @@ def dijkstras_shortest_path(routers, src_ip, dest_ip) -> list:
 
     _src, _dest = _router_keys_sorted.index(src_router), _router_keys_sorted.index(dest_router)
 
-    _dist, _prev = _graph.dijkstra(src=_src)
+    prev = graph.dijkstra(src=src)
 
     ip_path = [_router_keys_sorted[i] for i in Graph.shortest_path(dest=_dest, prev=_prev)]
 
