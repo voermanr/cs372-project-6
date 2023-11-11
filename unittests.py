@@ -1,7 +1,6 @@
 import unittest
 import dijkstra as di
 import netfuncs as nf
-import numpy as np
 import json
 
 
@@ -49,42 +48,84 @@ class TestNetFunctions(unittest.TestCase):
         self.assertEqual(nf.find_router_for_ip(routers=routers, ip="1.2.5.6"), None)
 
 
+class TestDSP(unittest.TestCase):
+    def test_dijkstras_shortest_path(self):
+        router_file_name = 'example1.json'
+
+        json_data = read_routers(router_file_name)
+
+        routers = json_data["routers"]
+
+        self.assertEqual( ['10.34.52.1', '10.34.250.1', '10.34.166.1'], di.dijkstras_shortest_path(routers, src_ip="10.34.52.158", dest_ip="10.34.166.1"))
+
+    def test_find_routes(self):
+        di.find_routes(routers=read_routers('example1.json')['routers'],
+                       src_dest_pairs=read_routers('example1.json')['src-dest'])
+
+
 class TestDijkstras(unittest.TestCase):
     def test_dijkstras(self):
-        test_graph = di.Graph(4)
+
         test_adj_m = [[0, 1, 4, 4],
                       [8, 0, 4, 6],
                       [3, 5, 0, 7],
                       [9, 9, 2, 0]]
 
-        test_graph.set_adj_matrix(test_adj_m)
+        test_graph = di.Graph(test_adj_m)
 
-        # print(f'test_graph.dijkstra(n): ->\t{test_graph.dijkstra(1)}')
+        test_graph.set_adj_matrix(test_adj_m)
 
     def test_shortest_path(self):
-        test_graph = di.Graph(4)
-        test_adj_m = [[np.inf, np.inf, 4, np.inf],
-                      [8, np.inf, 4, 6],
+        test_adj_m = [[0, 0, 4, 0],
+                      [8, 0, 4, 6],
                       [3, 5, 0, 0],
-                      [9, 0, 2, np.inf]]
-        test_graph.set_adj_matrix(test_adj_m)
+                      [9, 0, 2, 0]]
+        test_graph = di.Graph(test_adj_m)
+
         s = 0
         d = 3
 
-        shortest_path = di.shortest_path(src=s, dest=d, prev=test_graph.dijkstra(src=s)[1])
-        # print(f'{s} -> {shortest_path} -> {d}')
+        test_prev = test_graph.dijkstra(src=s)[1]
+
+        self.assertEqual([0, 2, 1, 3],
+                         di.Graph.shortest_path(dest=d, prev=test_prev))
 
     def test_router_dict_to_adj_m(self):
+        routers = {
+            "10.0.0.1": {
+                "connections": {
+                    "10.0.0.2": {
+                        "ad": 5
+                    },
+                    "10.0.0.3": {
+                        "ad": 10
+                    }
+                }
+            },
+            "10.0.0.2": {
+                "connections": {
+                    "10.0.0.1": {
+                        "ad": 3
+                    }
+                }
+            },
+            "10.0.0.3": {
+                "connections": {
+                    "10.0.0.2": {
+                        "ad": 1
+                    }
+                }
+            }
+        }
 
-        json_data = read_routers('example1.json')
+        expected_return = ([[0, 5, 10],
+                            [3, 0, 0],
+                            [0, 1, 0]],
+                           ['10.0.0.1',
+                            '10.0.0.2',
+                            '10.0.0.3'])
 
-        routers = json_data["routers"]
-
-        # print(json_data)
-
-        # print(routers)
-
-        test_adj_m = di.router_dict_to_adj_m(routers)
+        self.assertEqual(expected_return, di.Graph.router_dict_to_adj_m(routers=routers))
 
     def test_sort_router_ip_addresses(self):
         expected_return = ['10.34.166.1', '10.34.194.1',
@@ -97,7 +138,7 @@ class TestDijkstras(unittest.TestCase):
 
         routers = json_data["routers"]
 
-        self.assertEqual(expected_return, di.sort_router_ip_addresses(routers=routers))
+        self.assertEqual(expected_return, di.Graph.sort_router_ip_addresses(routers=routers))
 
 
 if __name__ == '__main__':

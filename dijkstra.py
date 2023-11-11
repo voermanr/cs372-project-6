@@ -2,8 +2,16 @@ import heapq
 import sys
 import json
 import math  # If you want to use math.inf for infinity
+import netfuncs as nf
 
-# TODO refactor this code based on specific problem
+
+DEBUG = 0
+
+
+def vprint(*values):
+    if DEBUG:
+        print(*values)
+
 
 # This class is taken from an implementation I used in Algorithms in 2023.
 # I believe the original source was either provided by the instructor, or
@@ -11,44 +19,44 @@ import math  # If you want to use math.inf for infinity
 class Graph:
 
     # construct the graph
-    def __init__(self, vertices):
-        self.V = vertices
+    def __init__(self, adjmat):
+        self.V = len(adjmat)
         # adjacency matrix
-        self.graph = [[0 for column in range(vertices)]
-                      for row in range(vertices)]
+        self.graph = [[0 for _ in range(self.V)]
+                      for _ in range(self.V)]
         # list of edges
         self.edges = []
+
+        self.set_adj_matrix(adjmat=adjmat)
 
     # set the adjacency matrix
     def set_adj_matrix(self, adjmat):
 
         # function to add an edge to edge list
-        def addEdge(self, u, v, w):
+        def add_edge(self, u, v, w):
             if w > 0:
                 self.edges.append([u, v, w])
 
-                # function to add edges for an adj matrix
-
-        def setEdges(self, m):
+        # function to add edges for an adj matrix
+        def set_edges(self, m):
             for i in range(len(m)):
                 for j in range(len(m[i])):
-                    addEdge(self, i, j, m[i][j])
+                    add_edge(self, i, j, m[i][j])
             return
 
         self.graph = adjmat
-        setEdges(self, adjmat)
+        set_edges(self, adjmat)
 
     # pretty print the path
-    def printPath(self, dist):
-        print("vertex\tdistance")
+    def print_path(self, dist):
+        vprint("vertex\tdistance")
         for node in range(self.V):
-            print(node, "\t", dist[node])
-
+            vprint(node, "\t", dist[node])
 
     # Dijkstra's single source shortest path algorithm
     def dijkstra(self, src):
         # Do some setup for our datastructures
-        dist = [sys.maxsize] * self.V
+        dist = [math.inf] * self.V
         pred = [None] * self.V
 
         # InitSSSP(s)
@@ -72,7 +80,6 @@ class Graph:
 
                     # if u→v is tense
                     if dist[u] + w < dist[v]:
-
                         # Relax u→v
                         dist[v] = dist[u] + w
                         pred[v] = u
@@ -87,10 +94,57 @@ class Graph:
                         heapq.heappush(priority_queue, target_vertex)
 
         # print path and return it
-        self.printPath(dist)
-        return dist
+        self.print_path(dist)
+        return dist, pred
 
-def dijkstras_shortest_path(routers, src_ip, dest_ip):
+
+    @staticmethod
+    def shortest_path(dest, prev):
+        current_node = dest
+        src = prev.index(None)
+        path = []
+
+        while current_node != src:
+            path.append(current_node)
+            vprint(f'shortest_path:\tAdded {current_node} to path\n\t\t{path}')
+            current_node = prev[current_node]
+            vprint(f'\t\tGrabbing parent -> {current_node}')
+        path.append(src)
+
+        return path[::-1]
+
+
+    @staticmethod
+    def router_dict_to_adj_m(routers) -> [[int]]:
+        """
+        parses a json router dictionary and returns an adjacency list
+        :param routers: JSON routers
+        :return: adjacency_matrix, router_keys_sorted
+        """
+        _n_routers = len(routers)
+
+        _adj_m = [[0 for _ in range(_n_routers)] for _ in range(_n_routers)]
+
+        _routers_keys_sorted = Graph.sort_router_ip_addresses(routers)
+
+        for i, router_ip in enumerate(_routers_keys_sorted):
+            vprint(f'router_key {i}:\t{router_ip}')
+            for connection_ip, connection_attributes in routers[router_ip]['connections'].items():
+                j = _routers_keys_sorted.index(connection_ip)
+                vprint(f'Router {i}:\tconnection {connection_ip} \t-> {j}:\t{connection_attributes}')
+                _adj_m[i][j] = connection_attributes['ad']
+
+        return _adj_m, _routers_keys_sorted
+
+
+    @staticmethod
+    def sort_router_ip_addresses(routers) -> list:
+        _sorted_keys = sorted(routers.keys())
+
+        return _sorted_keys
+
+
+def dijkstras_shortest_path(routers, src_ip, dest_ip) -> list:
     """
     This function takes a dictionary representing the network, a source
     IP, and a destination IP, and returns a list with all the routers
@@ -144,13 +198,19 @@ def dijkstras_shortest_path(routers, src_ip, dest_ip):
     for madness.
     """
 
-    # TODO Write me!
-    # need to get number of vertices and make and
-    # adjacency matrix for that
+    src_router, dest_router = (nf.find_router_for_ip(routers=routers, ip=src_ip),
+                               nf.find_router_for_ip(routers=routers, ip=dest_ip))
 
-    # parse routers
+    _adj_mat, _router_keys_sorted = Graph.router_dict_to_adj_m(routers=routers)
+    _graph = Graph(_adj_mat)
 
-    pass
+    _src, _dest = _router_keys_sorted.index(src_router), _router_keys_sorted.index(dest_router)
+
+    _dist, _prev = _graph.dijkstra(src=_src)
+
+    ip_path = [_router_keys_sorted[i] for i in Graph.shortest_path(dest=_dest, prev=_prev)]
+
+    return ip_path if len(ip_path) > 1 else []
 
 
 # ------------------------------
@@ -190,16 +250,3 @@ def main(argv):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
-
-
-def router_dict_to_adj_m(routers) -> [[int]]:
-    """
-    parses a json router dictionary and returns an adjacency list
-    """
-    _adj_m = [[int]]
-
-    return _adj_m
-
-
-def sort_router_ip_addresses(routers) -> list:
-    return sorted(routers.keys())
